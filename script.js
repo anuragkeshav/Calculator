@@ -1,11 +1,9 @@
-
 const display = document.querySelector('input[type="text"]');
 const buttons = document.querySelectorAll('button');
 
 const historyToggle = document.querySelector('.history-toggle');
 const historyPanel  = document.querySelector('.history-panel');
 const historyList   = document.getElementById('historyList');
-
 
 let currentInput = '';
 let history = [];
@@ -38,7 +36,6 @@ function calculate() {
 
 function addToHistory(expr, result) {
   history.unshift({ expr, result });
-
   if (history.length > 20) history.pop();
   renderHistory();
 }
@@ -89,7 +86,6 @@ function handleInput(value) {
     return;
   }
 
-  
   if (/[\+\-\*\/]/.test(value)) {
     if (lastInputWasOperator) return;
     lastInputWasOperator = true;
@@ -97,7 +93,6 @@ function handleInput(value) {
     updateDisplay(currentInput);
     return;
   }
-
 
   lastInputWasOperator = false;
   currentInput += value;
@@ -107,15 +102,30 @@ function handleInput(value) {
 
 buttons.forEach(btn => {
 
-
+  
   btn.addEventListener('touchstart', e => {
     e.preventDefault();
-    handleInput(btn.textContent);
+    btn.classList.add('pressed');
+
+    requestAnimationFrame(() => {
+      handleInput(btn.textContent);
+    });
   }, { passive: false });
 
-  
+
+  btn.addEventListener('touchend', () => {
+    btn.classList.remove('pressed');
+  });
+
+  btn.addEventListener('touchcancel', () => {
+    btn.classList.remove('pressed');
+  });
+
+
   btn.addEventListener('click', () => {
+    btn.classList.add('pressed');
     handleInput(btn.textContent);
+    setTimeout(() => btn.classList.remove('pressed'), 90);
   });
 
 });
@@ -168,5 +178,4 @@ document.addEventListener('keydown', e => {
     currentInput = '';
     updateDisplay();
   }
-
 });
